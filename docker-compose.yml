@@ -1,3 +1,5 @@
+
+# This is a file that sets up a redis container with a persistent volume, that creates persistence
 services:
   cache:
     image: redis:7-alpine

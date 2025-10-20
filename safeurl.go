@@ -9,10 +9,12 @@ import (
 
 func IsSafe(rawURL string) bool {
 
+    // A string slice containing many unsafe TLDs
     unsafeTLDs := []string{".xyz", ".buzz", ".shop", ".icu", ".lol", ".sbs", ".cyou", ".cm", ".co", ".ga"}
     
     u, err := url.Parse(rawURL)
 
+    // If there is an error parsing the url, say there is an error and return false
     if err != nil {
 
         fmt.Println("Error parsing raw URL")
@@ -20,13 +22,14 @@ func IsSafe(rawURL string) bool {
 
     }
 
+    // If the length of the raw URL is greater than 100 characters, then return false
     if len(rawURL) > 100 {
 
         return false
 
     }
 
-    //check if raw url has a secure protocol
+    //check if raw url has the https protocol
     if u.Scheme != "https" {
 
         return false

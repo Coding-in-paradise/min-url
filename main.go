@@ -14,6 +14,7 @@ import (
     "github.com/redis/go-redis/v9"
 )
 
+//A struct that is used to encode a http request into JSON
 type shortreq struct {
 
     Url string  `json:"url"`
@@ -22,6 +23,7 @@ type shortreq struct {
 
 var ctx = context.Background()
 
+//Initialize the redis client
 var client = redis.NewClient(&redis.Options{
  
     Addr:        "localhost:6379",
@@ -43,15 +45,19 @@ var m *MemoryStore = &memoryStore
 
 func main(){
 
+    //ping the redis client to see if there is a connection
     pong, err := client.Ping(ctx).Result()
     fmt.Println(pong, err)
 
+    // set up http endpoints
     http.HandleFunc("/", RedirectHandler)
     http.HandleFunc("/healthz", HealthCheckHandler)
     http.HandleFunc("/shorten", ShortenHandler)
     http.ListenAndServe(":8080", nil)
 }
 
+//A function that creates a random string for the shortened url
+//Can be considered the ID for the min url
 func makeRandomString() string {
 
     const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
@@ -70,6 +76,7 @@ func makeRandomString() string {
 
 }
 
+//This handles a request to shorten a url 
 func ShortenHandler(w http.ResponseWriter, req *http.Request){
 
     defer req.Body.Close()
@@ -170,6 +177,7 @@ func ShortenHandler(w http.ResponseWriter, req *http.Request){
     w.Write([]byte("\n"))
 }
 
+//This handles a request to redirect the shortened url to the original url
 func RedirectHandler(w http.ResponseWriter, req *http.Request) {
 
     
@@ -254,6 +262,8 @@ func RedirectHandler(w http.ResponseWriter, req *http.Request) {
 */
 }
 
+
+//This handler checks if the server is healthy
 func HealthCheckHandler(w http.ResponseWriter, req *http.Request) {
     
     data := map[string]string{
